@@ -11,3 +11,5 @@ coverage
 *.tmp
 *.bak
 *.swp
+/build
+generated/
