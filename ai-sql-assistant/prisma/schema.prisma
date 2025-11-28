@@ -12,3 +12,43 @@ generator client {
 datasource db {
   provider = "mysql"
 }
+
+model Student {
+  id          Int        @id @default(autoincrement())
+  name        String
+  age         Int
+  batch_id    Int
+  fees_status FeesStatus @default(UNPAID)
+
+  batch Batch @relation(fields: [batch_id], references: [id])
+  fees  Fee[]
+}
+
+enum FeesStatus {
+  PAID
+  UNPAID
+}
+
+model Batch {
+  id         Int    @id @default(autoincrement())
+  batch_name String
+  subject    String
+
+  students Student[]
+}
+
+model Fee {
+  id           Int      @id @default(autoincrement())
+  amount       Float
+  payment_date DateTime
+  mode         Mode
+  student_id   Int
+
+  student Student @relation(fields: [student_id], references: [id])
+}
+
+enum Mode {
+  CASH
+  CARD
+  ONLINE
+}
