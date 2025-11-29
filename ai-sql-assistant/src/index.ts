@@ -5,7 +5,6 @@ import "dotenv/config";
 import express, { type Express } from "express";
 import {
   extractDynamic,
-  generateContentAI,
   generateDataWithQuery,
   generateWithMemory,
 } from "./utils/index.js";
@@ -34,17 +33,14 @@ app.post("/prompt", async (req, res) => {
       )
     );
 
-    const { key, value } = extractDynamic(safeResult);
+    const { keys, rows } = extractDynamic(safeResult);
 
     const summary = await generateWithMemory(`
-    Here is the query result:
-    Key: ${String(key)}
-    Value: ${JSON.stringify(value)}
+    SQL Result Rows:
+    ${JSON.stringify(rows, null, 2)}
     
-    Please explain this result in simple natural language.
-    `);
-
-    console.log(summary);
+    Please summarise this result in natural language.
+`);
 
     res.json({
       sql: sqlQuery,

@@ -76,17 +76,16 @@ export async function generateDataWithQuery(sqlQuery: string) {
 }
 
 export function extractDynamic<T extends Record<string, any>>(result: T[]) {
-  if (!result || result.length === 0) {
+  if (!Array.isArray(result) || result.length === 0) {
     throw new Error("Result is empty");
   }
 
-  const obj = result[0];
+  const keys = Object.keys(result[0]) as (keyof T)[];
 
-  const keys = Object.keys(obj) as (keyof T)[];
-  const key = keys[0];
-  const value = obj[key];
-
-  return { key, value };
+  return {
+    keys,
+    rows: result,
+  };
 }
 
 // Very simple in-memory memory
