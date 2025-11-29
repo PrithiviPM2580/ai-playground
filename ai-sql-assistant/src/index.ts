@@ -3,6 +3,12 @@
 // ============================================================
 import "dotenv/config";
 import express, { type Express } from "express";
+import {
+  extractDynamic,
+  generateContentAI,
+  generateDataWithQuery,
+  generateWithMemory,
+} from "./utils/index.js";
 
 const app: Express = express();
 
@@ -14,6 +20,42 @@ app.get("/", (req, res) => {
   res.send("AI SQL Assistant is running!");
 });
 
+app.post("/prompt", async (req, res) => {
+  const { prompt } = req.body as { prompt: string };
+
+  try {
+    const sqlQuery = await generateWithMemory(prompt);
+
+    const result = await generateDataWithQuery(sqlQuery);
+
+    const safeResult = JSON.parse(
+      JSON.stringify(result, (_, value) =>
+        typeof value === "bigint" ? Number(value) : value
+      )
+    );
+
+    const { key, value } = extractDynamic(safeResult);
+
+    const summary = await generateWithMemory(`
+    Here is the query result:
+    Key: ${String(key)}
+    Value: ${JSON.stringify(value)}
+    
+    Please explain this result in simple natural language.
+    `);
+
+    console.log(summary);
+
+    res.json({
+      sql: sqlQuery,
+      result: safeResult,
+      aiResponse: summary,
+    });
+  } catch (error) {
+    console.log("Error: ", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 app.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
 });
