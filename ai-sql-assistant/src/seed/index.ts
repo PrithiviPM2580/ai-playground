@@ -2,8 +2,12 @@
 // 🔹SeedData — Seed initial data into the database
 // ============================================================
 
-import prisma from "src/config/prisma.config";
-import { CREATE_BATCHES, CREATE_FEES, CREATE_STUDENTS } from "src/constants";
+import prisma from "src/config/prisma.config.js";
+import {
+  CREATE_BATCHES,
+  CREATE_FEES,
+  CREATE_STUDENTS,
+} from "../constants/index.js";
 
 async function seedData() {
   await prisma.batch.createMany({
