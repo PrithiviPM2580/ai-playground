@@ -9,6 +9,9 @@ import {
   CREATE_STUDENTS,
 } from "../constants/index.js";
 
+// ------------------------------------------------------
+// seedData() — Seed initial data into the database
+// ------------------------------------------------------
 async function seedData() {
   await prisma.batch.createMany({
     data: CREATE_BATCHES,
@@ -21,6 +24,7 @@ async function seedData() {
   });
 }
 
+// Execute the seeding process
 seedData()
   .then(() => {
     console.log("Seeding Complete");

@@ -93,15 +93,15 @@ let conversationMemory: { role: "user" | "model"; content: string }[] = [];
 export async function generateWithMemory(newPrompt: string) {
   // Build final prompt using memory + new message
   const context = conversationMemory
-    .map((m) => `${m.role.toUpperCase()}: ${m.content}`)
+    .map((m) => `${m.role.toLowerCase()}: ${m.content}`)
     .join("\n");
 
   const finalPrompt = `
-${context}
-
-USER: ${newPrompt}
-
-Based on the conversation above, respond appropriately.
+  ${context}
+  
+  user: ${newPrompt}
+  
+  Based on the conversation above, respond appropriately.
   `;
 
   const response = await generateContentAI(finalPrompt);

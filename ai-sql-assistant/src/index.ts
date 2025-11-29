@@ -24,6 +24,7 @@ app.post("/prompt", async (req, res) => {
 
   try {
     const sqlQuery = await generateWithMemory(prompt);
+    console.log(sqlQuery);
 
     const result = await generateDataWithQuery(sqlQuery);
 
